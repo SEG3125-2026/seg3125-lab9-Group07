@@ -1,0 +1,34 @@
+/* FitBook Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #c8bfaa;
+  --bg-light: #d4cbb8;
+  --bg-card: #cdc4b0;
+  --surface: #e8e2d6;
+  --surface-dark: #1a1a1a;
+  --orange: #E8521A;
+  --orange-hover: #d14515;
+  --text-dark: #1a1a1a;
+  --text-mid: #3a3a3a;
+  --text-light: #ffffff;
+  --border: rgba(0,0,0,0.12);
+  --shadow: 0 2px 12px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font-heading: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg);
+  color: var(--text-dark);
+  min-height: 100vh;
+}

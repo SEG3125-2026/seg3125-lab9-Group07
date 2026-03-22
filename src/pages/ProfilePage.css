@@ -1,0 +1,266 @@
+.profile-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* ── Sidebar ── */
+.profile-sidebar {
+  width: 260px;
+  background: var(--bg-light, #d4cbb8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 20px 36px;
+  gap: 12px;
+  flex-shrink: 0;
+  border-right: 1.5px solid rgba(0,0,0,0.08);
+}
+
+.sidebar-avatar {
+  margin-bottom: 8px;
+}
+
+.sidebar-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.sidebar-username {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin-top: -6px;
+}
+
+.sidebar-edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.sidebar-input {
+  border: 1.5px solid var(--orange);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: #fff;
+  outline: none;
+  width: 100%;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.sidebar-nav-item {
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-dark);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sidebar-nav-item:hover {
+  background: rgba(0,0,0,0.06);
+}
+
+.sidebar-nav-item--active {
+  font-weight: 700;
+}
+
+.edit-profile-btn {
+  margin-top: auto;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 28px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+}
+
+.edit-profile-btn:hover {
+  background: var(--orange-hover);
+}
+
+/* ── Main content ── */
+.profile-main {
+  flex: 1;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.profile-section-title {
+  font-size: 22px;
+  font-weight: 700;
+  border-bottom: 2.5px solid var(--orange);
+  padding-bottom: 6px;
+  color: var(--text-dark);
+}
+
+/* ── Appointment card ── */
+.profile-appt-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 2px solid var(--text-dark);
+  border-radius: var(--radius);
+  padding: 20px 28px;
+  background: var(--surface);
+}
+
+.profile-appt-left { flex: 1; }
+.profile-appt-right { flex: 1; text-align: right; }
+
+.profile-appt-date  { font-size: 18px; font-weight: 700; }
+.profile-appt-time  { font-size: 15px; color: var(--text-mid); }
+.profile-appt-trainer { font-size: 16px; font-weight: 700; }
+.profile-appt-service { font-size: 14px; color: var(--text-mid); border-top: 1.5px solid var(--orange); padding-top: 4px; margin-top: 4px; }
+
+.profile-appt-divider {
+  width: 1.5px;
+  height: 48px;
+  background: var(--border);
+}
+
+.go-appts-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--text-dark);
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.15s;
+}
+
+.go-appts-btn:hover { background: var(--bg-card); }
+
+/* ── Goals ── */
+.goals-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.goal-dot {
+  color: var(--orange);
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.goal-text {
+  flex: 1;
+  font-size: 15px;
+  color: var(--orange);
+  font-weight: 500;
+}
+
+.goal-remove {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  transition: color 0.15s;
+}
+
+.goal-remove:hover { color: #e03030; }
+
+.goal-add-row {
+  display: flex;
+  gap: 8px;
+}
+
+.goal-input {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--surface);
+  outline: none;
+}
+
+.goal-input:focus { border-color: var(--orange); }
+
+.goal-add-btn {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 20px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.goals-hint {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ── Placeholder ── */
+.placeholder-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.placeholder-text {
+  color: var(--text-mid);
+  font-size: 15px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .profile-wrapper   { flex-direction: column; }
+  .profile-sidebar   { width: 100%; border-right: none; border-bottom: 1.5px solid rgba(0,0,0,0.08); }
+  .profile-main      { padding: 24px 16px; }
+}

@@ -1,0 +1,215 @@
+.page-wrapper {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+}
+
+.page-card {
+  width: 100%;
+  max-width: 900px;
+  background: var(--bg);
+}
+
+.site-title {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  letter-spacing: 2px;
+  text-align: center;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+/* ── Appointments ── */
+.appt-main {
+  padding: 24px 0;
+}
+
+.appt-heading {
+  font-family: var(--font-body);
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.appt-tabs {
+  display: flex;
+  border-radius: var(--radius) var(--radius) 0 0;
+  overflow: hidden;
+  border: 1.5px solid #888;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 14px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s;
+}
+
+.tab-btn--upcoming-active {
+  background: var(--orange);
+  color: var(--surface-dark);
+}
+
+.tab-btn--upcoming-inactive {
+  background: var(--surface-dark);
+  color: var(--orange);
+}
+
+.tab-btn--past-active {
+  color: var(--surface-dark);
+  background: var(--orange);
+}
+
+.tab-btn--past-inactive {
+  background: var(--surface-dark);
+  color: var(--orange);
+}
+
+.appt-list {
+  background: var(--surface);
+  border: 1.5px solid #888;
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px;
+}
+
+.appt-empty {
+  text-align: center;
+  color: var(--text-mid);
+  padding: 32px;
+  font-size: 16px;
+}
+
+.appt-card {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  gap: 16px;
+}
+
+.appt-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.appt-trainer {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.appt-divider {
+  height: 1.5px;
+  background: var(--orange);
+  width: 100%;
+  max-width: 180px;
+  margin: 2px 0;
+}
+
+.appt-service {
+  font-size: 15px;
+  color: var(--text-mid);
+}
+
+.appt-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  gap: 2px;
+  min-width: 130px;
+}
+
+.appt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 110px;
+}
+
+.action-btn {
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.action-btn:hover {
+  background: var(--orange-hover);
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 360px;
+  width: 90%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.modal-btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal-btn--cancel {
+  background: var(--surface-dark);
+  color: #fff;
+}
+
+.modal-btn--confirm {
+  background: var(--orange);
+  color: #fff;
+}
+
+.modal-btn--confirm:hover {
+  background: var(--orange-hover);
+}
