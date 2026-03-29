@@ -1,4 +1,4 @@
-# FitBook — SEG3125 Lab 8
+# FitBook — SEG3125 Lab 9
 
 Fitness appointment booking web app built with React.
 
