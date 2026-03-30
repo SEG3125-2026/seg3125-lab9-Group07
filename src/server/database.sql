@@ -5,11 +5,27 @@ CREATE TABLE trainers(
     email VARCHAR(100) UNIQUE NOT NULL
 );
 
--- 2. Create services (no dependencies)
-CREATE TABLE services(
-    id SERIAL PRIMARY KEY,
-    serviceName VARCHAR(100) NOT NULL,
-    duration INT NOT NULL
+
+INSERT INTO trainers (trainerName, email) VALUES 
+('Michael Strand', 'mstrand@fitness.com'),
+('John Cheng', 'jcheng@fitness.com'),
+('Emma Williams', 'ewilliams@fitness.com'),
+('David Martinez', 'dmartinez@fitness.com');
+
+INSERT INTO services (serviceName, duration) VALUES 
+('Peronsal Training', 60),
+('Yoga', 60),
+('Pilates', 80),
+('Nutrition', 40);
+
+
+
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY, 
+    userName VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(100) NOT NULL,
+    fitGoals_id INT REFERENCES fitnessGoals(id)
 );
 
 -- 3. Create fitnessGoals (no dependencies)

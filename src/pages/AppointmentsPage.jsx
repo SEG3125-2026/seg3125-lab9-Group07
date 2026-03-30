@@ -11,60 +11,45 @@ export default function AppointmentsPage() {
   const [error, setError] = useState(null);
   const [cancelConfirm, setCancelConfirm] = useState(null);
 
-  // Fetch appointments from API
+  // Load appointments from the database
+  const fetchAppointments = () => {
+    fetch('http://localhost:5000/api/appointments')
+      .then(res => res.json())
+      .then(data => setAppointments(data))
+      .catch(err => console.error("Error loading appointments:", err));
+  };
+
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        setLoading(true);
-        // Use stored user ID or default to 1 for demo
-        const userId = localStorage.getItem('userId') || 1;
-        const response = await getUserAppointments(userId);
-
-        // Split into upcoming and past
-        const now = new Date();
-        const upcomingAppts = [];
-        const pastAppts = [];
-
-        response.data.forEach(appt => {
-          const apptDate = new Date(appt.dateOf);
-          if (appt.curStatus === 'past' || apptDate < now) {
-            pastAppts.push(appt);
-          } else {
-            upcomingAppts.push(appt);
-          }
-        });
-
-        setUpcoming(upcomingAppts);
-        setPast(pastAppts);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching appointments:', err);
-        setError('Failed to load appointments. Please refresh the page.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAppointments();
+    fetchAppointments
   }, []);
+
+  // Filter the database results based on the active tab
+  const list = appointments.filter(appt =>
+    activeTab === 'upcoming' ? appt.status === 'upcoming' : appt.status === 'past'
+  );
 
   const handleCancel = (id) => setCancelConfirm(id);
 
   const confirmCancel = async () => {
     try {
-      await cancelAppointment(cancelConfirm);
-      setUpcoming(prev => prev.filter(a => a.id !== cancelConfirm));
-      setCancelConfirm(null);
+      // Call the PUT route you created in server.js
+      const response = await fetch(`http://localhost:5000/api/appointments/${cancelConfirm}/cancel`, {
+        method: 'PUT'
+      });
+
+      if (response.ok) {
+        setCancelConfirm(null);
+        fetchAppointments(); // Refresh the list from the database
+      }
     } catch (err) {
-      console.error('Error canceling appointment:', err);
-      alert('Failed to cancel appointment. Please try again.');
+      console.error("Failed to cancel:", err);
     }
   };
 
   const handleReschedule = (id) => {
-    alert(`Reschedule flow for appointment #${id} — connect to booking flow in Lab 9.`);
+    navigate('/book');
   };
 
-  const list = activeTab === 'upcoming' ? upcoming : past;
 
   return (
     <div className="page-wrapper">

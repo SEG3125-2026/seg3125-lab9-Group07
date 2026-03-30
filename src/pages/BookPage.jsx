@@ -181,22 +181,40 @@ export default function BookPage() {
     return true;
   };
 
+  const handleNext = () => {
+    if (canNext() && step < 3) setStep(s => s + 1);
+  };
+
+  const handleBack = () => {
+    if (step > 0) setStep(s => s - 1);
+  };
+
+  // Inside BookPage.jsx -> handleBook function
+
   const handleBook = async () => {
+    const bookingData = {
+      trainer_id: trainer.id,
+      service_id: service.id,
+      dateOf: date,
+      timeOf: time, // e.g., "10 AM"
+    };
+
     try {
-      const userId = Number(localStorage.getItem('userId')) || 1;
-      const appointmentData = {
-        user_id: userId,
-        trainer_id: trainer.id,
-        service_id: service.id,
-        dateOf: date,
-        timeOf: time,
-      };
-      await createAppointment(appointmentData);
-      setBooked(true);
-      setTimeout(() => navigate('/appointments'), 1800);
-    } catch (err) {
-      console.error('Error booking appointment:', err);
-      alert('Failed to book appointment. Please try again.');
+      const response = await fetch('http://localhost:5000/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (response.ok) {
+        setBooked(true);
+        setTimeout(() => navigate('/appointments'), 1800);
+      } else {
+        alert("Booking failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Could not connect to the server.");
     }
   };
 
