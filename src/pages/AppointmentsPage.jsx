@@ -19,27 +19,45 @@ export default function AppointmentsPage() {
   const [past]                    = useState(SAMPLE_PAST);
   const [cancelConfirm, setCancelConfirm] = useState(null);
 
-  useEffect(() => {
+// Load appointments from the database
+  const fetchAppointments = () => {
     fetch('http://localhost:5000/api/appointments')
       .then(res => res.json())
       .then(data => setAppointments(data))
       .catch(err => console.error("Error loading appointments:", err));
-  }, []);
+  };
 
+  useEffect(() => {
+    fetchAppointments}, []);
+
+  // Filter the database results based on the active tab
+  const list = appointments.filter(appt => 
+    activeTab === 'upcoming' ? appt.status === 'upcoming' : appt.status === 'past'
+  );
 
   const handleCancel = (id) => setCancelConfirm(id);
 
-  const confirmCancel = () => {
-    setUpcoming(prev => prev.filter(a => a.id !== cancelConfirm));
-    setCancelConfirm(null);
+  const confirmCancel = async () => {
+    try {
+      // Call the PUT route you created in server.js
+      const response = await fetch(`http://localhost:5000/api/appointments/${cancelConfirm}/cancel`, {
+        method: 'PUT'
+      });
+      
+      if (response.ok) {
+        setCancelConfirm(null);
+        fetchAppointments(); // Refresh the list from the database
+      }
+    } catch (err) {
+      console.error("Failed to cancel:", err);
+    }
   };
 
   const handleReschedule = (id) => {
-    alert(`Reschedule flow for appointment #${id} — connect to booking flow in Lab 9.`); // send back to booking page but with empty answers
+    navigate('/book');
   };
 
-  const list = activeTab === 'upcoming' ? upcoming : past;
-
+  
   return (
     <div className="page-wrapper">
       <div className="page-card">
