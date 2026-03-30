@@ -1,0 +1,19 @@
+{
+    "name": "fitbook-server",
+    "version": "1.0.0",
+    "description": "FitBook API Server",
+    "main": "server.js",
+    "type": "commonjs",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node server.js"
+    },
+    "dependencies": {
+        "cors": "^2.8.6",
+        "dotenv": "^16.6.1",
+        "express": "^4.22.1",
+        "pg": "^8.20.0"
+    },
+    "author": "",
+    "license": "ISC"
+}
