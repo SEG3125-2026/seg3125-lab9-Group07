@@ -19,6 +19,14 @@ export default function AppointmentsPage() {
   const [past]                    = useState(SAMPLE_PAST);
   const [cancelConfirm, setCancelConfirm] = useState(null);
 
+  useEffect(() => {
+    fetch('http://localhost:5000/api/appointments')
+      .then(res => res.json())
+      .then(data => setAppointments(data))
+      .catch(err => console.error("Error loading appointments:", err));
+  }, []);
+
+
   const handleCancel = (id) => setCancelConfirm(id);
 
   const confirmCancel = () => {
@@ -27,7 +35,7 @@ export default function AppointmentsPage() {
   };
 
   const handleReschedule = (id) => {
-    alert(`Reschedule flow for appointment #${id} — connect to booking flow in Lab 9.`);
+    alert(`Reschedule flow for appointment #${id} — connect to booking flow in Lab 9.`); // send back to booking page but with empty answers
   };
 
   const list = activeTab === 'upcoming' ? upcoming : past;

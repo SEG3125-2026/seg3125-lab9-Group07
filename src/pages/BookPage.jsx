@@ -187,10 +187,34 @@ export default function BookPage() {
     if (step > 0) setStep(s => s - 1);
   };
 
-  const handleBook = () => {
-    setBooked(true);
-    setTimeout(() => navigate('/appointments'), 1800);
+  // Inside BookPage.jsx -> handleBook function
+
+const handleBook = async () => {
+  const bookingData = {
+    trainer_id: trainer.id,
+    service_id: service.id,
+    dateOf: date,
+    timeOf: time, // e.g., "10 AM"
   };
+
+  try {
+    const response = await fetch('http://localhost:5000/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bookingData),
+    });
+
+    if (response.ok) {
+      setBooked(true);
+      setTimeout(() => navigate('/appointments'), 1800);
+    } else {
+      alert("Booking failed. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Could not connect to the server.");
+  }
+};
 
   return (
     <div className="book-wrapper">
