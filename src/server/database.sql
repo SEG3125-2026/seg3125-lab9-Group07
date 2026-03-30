@@ -26,11 +26,29 @@ CREATE TABLE trainers(
     email VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE user (
+
+INSERT INTO trainers (trainerName, email) VALUES 
+('Alex Rivera', 'alex@fitness.com'),
+('Jordan Smith', 'jordan@fitness.com'),
+('Sam Taylor', 'sam@fitness.com');
+
+INSERT INTO services (serviceName, duration) VALUES 
+('HIIT Session', 45),
+('Strength Training', 60),
+('Yoga Flow', 50);
+
+
+
+CREATE TABLE users(
     id SERIAL PRIMARY KEY, 
     userName VARCHAR(100) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(100) NOT NULL,
+    fitGoals_id INT REFERENCES fitnessGoals(id)
+);
+
+CREATE TABLE fitnessGoals (
+    id SERIAL PRIMARY KEY, 
     fitGoal1 VARCHAR(100),
     fitGoal2 VARCHAR(100),
     fitGoal3 VARCHAR(100),
