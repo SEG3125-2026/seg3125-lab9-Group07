@@ -28,14 +28,16 @@ CREATE TABLE trainers(
 
 
 INSERT INTO trainers (trainerName, email) VALUES 
-('Alex Rivera', 'alex@fitness.com'),
-('Jordan Smith', 'jordan@fitness.com'),
-('Sam Taylor', 'sam@fitness.com');
+('Michael Strand', 'mstrand@fitness.com'),
+('John Cheng', 'jcheng@fitness.com'),
+('Emma Williams', 'ewilliams@fitness.com'),
+('David Martinez', 'dmartinez@fitness.com');
 
 INSERT INTO services (serviceName, duration) VALUES 
-('HIIT Session', 45),
-('Strength Training', 60),
-('Yoga Flow', 50);
+('Peronsal Training', 60),
+('Yoga', 60),
+('Pilates', 80),
+('Nutrition', 40);
 
 
 
