@@ -23,6 +23,7 @@ const TRAINER_IMAGES = {
 const TIME_SLOTS = ['9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM'];
 const STEPS = ['Select Service', 'Select Trainer', 'Select Date & Time', 'Review & Book'];
 
+
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');

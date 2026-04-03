@@ -18,7 +18,7 @@ const PORT = 5000;
 
 // USERS
 // Get user profile
-app.get('/users', async (req, res) => {
+app.get('/api/users', async (req, res) => {
     try {
         //const { userId } = req.params;
         //const { userName, email, phone, fitGoals_ids } = req.body;
@@ -45,10 +45,10 @@ app.get('/users', async (req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Failed to create user' });
     }
-});*/
+}); */
 
 // Update user profile
-app.put('/users', async (req, res) => {
+app.put('/api/users', async (req, res) => {
     try {
         // const { userId } = req.params;
         const { userName, email, phone, fitGoals_ids, id} = req.body;
@@ -67,7 +67,7 @@ app.put('/users', async (req, res) => {
 // Fetch all info
 
 // TRAINERS 
-app.get('/trainers', async (req, res) => {
+app.get('/api/trainers', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM trainers');
         console.log('Trainers fetched:', result.rows.length);
@@ -79,7 +79,7 @@ app.get('/trainers', async (req, res) => {
 });
 
 // SERVUCES
-app.get('/services', async (req, res) => {
+app.get('/api/services', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM services');
         console.log('Services fetched:', result.rows.length);
@@ -92,8 +92,9 @@ app.get('/services', async (req, res) => {
 
 // APPOINTMENTS
 // Get all appointments for a user
-app.get('/appointments', async (req, res) => { ///:userId
+app.get('/api/appointments', async (req, res) => { ///:userId
     try {
+        //const {userId} = req.params;
         const result = await pool.query('SELECT * FROM appointments');
         res.json(result.rows);
     } catch (err) {
@@ -103,7 +104,7 @@ app.get('/appointments', async (req, res) => { ///:userId
 });
 
 // Create new appointment
-app.post('/appointments', async (req, res) => {
+app.post('/api/appointments', async (req, res) => {
     try {
         const { user_id, trainer_id, service_id, dateOf, timeOf } = req.body;
         const result = await pool.query(
@@ -120,7 +121,7 @@ app.post('/appointments', async (req, res) => {
 });
 
 // Cancel appointment
-app.put('/appointments/:appointmentId', async (req, res) => {
+app.put('/api/appointments/:appointmentId', async (req, res) => {
     try {
         const { appointmentId } = req.params;
         const result = await pool.query(
@@ -137,7 +138,7 @@ app.put('/appointments/:appointmentId', async (req, res) => {
 
 // ===== FITNESS GOALS =====
 // Get user's fitness goals
-app.get('/fitnessGoals', async (req, res) => { ///:userId
+app.get('/api/fitnessGoals', async (req, res) => { ///:userId
     try {
         const result = await pool.query(`SELECT * FROM fitnessGoals`);
         res.json(result.rows[0]);
@@ -148,7 +149,7 @@ app.get('/fitnessGoals', async (req, res) => { ///:userId
 });
 
 // Update fitness goals
-app.put('/fitness-goals/:goalsId', async (req, res) => {
+app.put('/api/fitnessGoals/:goalsId', async (req, res) => {
     try {
         const { goalsId } = req.params;
         const { fitGoal } = req.body;
@@ -167,7 +168,7 @@ app.put('/fitness-goals/:goalsId', async (req, res) => {
 
 // CONTACT
 // Submit contact/complaint
-app.post('/complaintPage', async (req, res) => {
+app.post('/api/complaintPage', async (req, res) => {
     try {
         const { customerName, email, title, complaint} = req.body;
         const result = await pool.query(
@@ -184,7 +185,7 @@ app.post('/complaintPage', async (req, res) => {
 });
 
 // Get all contacts (for admin)
-app.get('/contact', async (req, res) => {
+app.get('/api/contact', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM complaintPage ORDER BY id DESC');
         res.json(result.rows);
@@ -195,7 +196,7 @@ app.get('/contact', async (req, res) => {
 });
 
 // TRAINER AVAILABILITY
-app.get('/trainerAvailability/:trainerId', async (req, res) => {
+app.get('/api/trainerAvailability/:trainerId', async (req, res) => {
     try {
         const { trainerId } = req.params;
         const result = await pool.query(

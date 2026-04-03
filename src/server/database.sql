@@ -42,7 +42,6 @@ CREATE TABLE fitnessGoals (
 
 CREATE TABLE appointments (
     id SERIAL PRIMARY KEY, 
-    user_id INT REFERENCES users(id),
     trainer_id INT REFERENCES trainers(id),
     service_id INT REFERENCES services(id),
     dateOf DATE NOT NULL,
