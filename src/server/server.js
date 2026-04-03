@@ -1,111 +1,32 @@
 const express = require('express');
+const { Pool } = require('pg'); // we're using postgresql
 const cors = require('cors');
-const { Pool } = require('pg'); // Assuming PostgreSQL
 
-// to allow React to communcate with site
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. Database Connection
 const pool = new Pool({
-    user: 'your_username',
+    user: 'postgres',
     host: 'localhost',
-    database: 'appointment_db',
-    password: 'your_password',
+    database: 'appointments',
+    password: '1234',
     port: 5432,
 });
 
-
-// 2. GET Route: Fetch all trainers
-// server/index.js
+// Fetch all info
 app.get('/api/appointments', async (req, res) => {
     try {
-        const query = `
-      SELECT 
-        a.id, 
-        t.trainerName as trainer, 
-        s.serviceName as service, 
-        a.dateOf as date, 
-        a.timeOf as time,
-        a.curStatus as status
-      FROM apointments a
-      JOIN trainers t ON a.trainer_id = t.id
-      JOIN services s ON a.service_id = s.id
-    `;
-        const result = await pool.query(query);
+        const result = await pool.query('SELECT * FROM appointments');
         res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json(err.message);
     }
 });
 
-// Route to cancel (Update status)
-app.put('/api/appointments/:id/cancel', async (req, res) => {
-    const { id } = req.params;
-    await pool.query("UPDATE apointments SET curStatus = 'canceled' WHERE id = $1", [id]);
-    res.json({ message: "Cancelled" });
-});
-
-
-
-// 3. DELETE Route: Remove a trainer by ID
-app.delete('/api/trainers/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        await pool.query('DELETE FROM trainers WHERE id = $1', [id]);
-        res.json({ message: "Trainer removed successfully" });
-    } catch (err) {
-        res.status(500).send("Could not delete trainer");
-    }
-});
-
-// Add this to your server.js
-
-// Helper to convert "9 AM" or "2 PM" to an integer (e.g., 9 or 14)
-// This matches your SQL schema where timeOf is an INT
-const parseTimeToInt = (timeStr) => {
-    const [hourStr, modifier] = timeStr.split(' ');
-    let hour = parseInt(hourStr);
-    if (modifier === 'PM' && hour !== 12) hour += 12;
-    if (modifier === 'AM' && hour === 12) hour = 0;
-    return hour;
-};
-
-app.post('/api/appointments', async (req, res) => {
-    const { trainer_id, service_id, dateOf, timeOf } = req.body;
-
-    try {
-        const timeInt = parseTimeToInt(timeOf);
-
-        const query = `
-      INSERT INTO apointments (trainer_id, service_id, dateOf, timeOf, curStatus)
-      VALUES ($1, $2, $3, $4, 'upcoming')
-      RETURNING *;
-    `;
-
-        const values = [trainer_id, service_id, dateOf, timeInt];
-        const result = await pool.query(query, values);
-
-        res.status(201).json(result.rows[0]);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: "Server error while booking" });
-    }
-});
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({ error: 'Server error', message: err.message });
-});
 
 // ===== TRAINERS =====
-app.get('/api/trainers', async (req, res) => {
+app.get('/trainers', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM trainers');
         console.log('Trainers fetched:', result.rows.length);
@@ -117,7 +38,7 @@ app.get('/api/trainers', async (req, res) => {
 });
 
 // ===== SERVICES =====
-app.get('/api/services', async (req, res) => {
+app.get('/services', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM services');
         console.log('Services fetched:', result.rows.length);
@@ -128,20 +49,11 @@ app.get('/api/services', async (req, res) => {
     }
 });
 
-// ===== APPOINTMENTS =====
+// APPOINTMENTS
 // Get all appointments for a user
-app.get('/api/appointments/:userId', async (req, res) => {
+app.get('/appointments', async (req, res) => { ///:userId
     try {
-        const { userId } = req.params;
-        const result = await pool.query(
-            `SELECT a.*, t.trainerName, s.serviceName 
-             FROM apointments a
-             JOIN trainers t ON a.trainer_id = t.id
-             JOIN services s ON a.service_id = s.id
-             WHERE a.user_id = $1
-             ORDER BY a.dateOf DESC`,
-            [userId]
-        );
+        const result = await pool.query('SELECT * FROM appointments');
         res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -150,7 +62,7 @@ app.get('/api/appointments/:userId', async (req, res) => {
 });
 
 // Create new appointment
-app.post('/api/appointments', async (req, res) => {
+app.post('/appointments', async (req, res) => {
     try {
         const { user_id, trainer_id, service_id, dateOf, timeOf } = req.body;
         const result = await pool.query(
@@ -167,7 +79,7 @@ app.post('/api/appointments', async (req, res) => {
 });
 
 // Cancel appointment
-app.put('/api/appointments/:appointmentId', async (req, res) => {
+app.put('/appointments/:appointmentId', async (req, res) => {
     try {
         const { appointmentId } = req.params;
         const result = await pool.query(
@@ -183,7 +95,7 @@ app.put('/api/appointments/:appointmentId', async (req, res) => {
 
 // ===== USERS & PROFILES =====
 // Get user profile
-app.get('/api/users/:userId', async (req, res) => {
+app.get('/users/:userId', async (req, res) => {
     try {
         const { userId } = req.params;
         const result = await pool.query(
@@ -200,14 +112,14 @@ app.get('/api/users/:userId', async (req, res) => {
 });
 
 // Create new user
-app.post('/api/users', async (req, res) => {
+app.post('/users', async (req, res) => {
     try {
-        const { userName, email, phone } = req.body;
+        const { userName, email, phone, fitGoals_ids } = req.body;
         const result = await pool.query(
-            `INSERT INTO users (userName, email, phone)
-             VALUES ($1, $2, $3)
+            `INSERT INTO users (userName, email, phone,fitGoals_ids)
+             VALUES ($1, $2, $3, $4)
              RETURNING *`,
-            [userName, email, phone]
+            [userName, email, phone, fitGoals_ids]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {

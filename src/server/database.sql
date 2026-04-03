@@ -1,16 +1,78 @@
--- 1. Create trainers first (no dependencies)
 CREATE TABLE trainers(
     id SERIAL PRIMARY KEY,
     trainerName VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL
+    photo VARCHAR(300) NOT NULL 
 );
 
 
-INSERT INTO trainers (trainerName, email) VALUES 
-('Michael Strand', 'mstrand@fitness.com'),
-('John Cheng', 'jcheng@fitness.com'),
-('Emma Williams', 'ewilliams@fitness.com'),
-('David Martinez', 'dmartinez@fitness.com');
+CREATE TABLE services(
+    id SERIAL PRIMARY KEY,
+    serviceName VARCHAR(100) NOT NULL,
+    duration INT NOT NULL 
+);
+
+
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY, 
+    userName VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(100) NOT NULL,
+    fitGoals_ids INT[]
+);
+
+
+CREATE TABLE trainerAvailability(
+    id SERIAL PRIMARY KEY,
+    trainer_id INT REFERENCES trainers(id),
+    mon BOOLEAN NOT NULL,
+    tue BOOLEAN NOT NULL, 
+    wed BOOLEAN NOT NULL, 
+    thu BOOLEAN NOT NULL, 
+    fri BOOLEAN NOT NULL, 
+    sat BOOLEAN NOT NULL, 
+    sun BOOLEAN NOT NULL 
+);
+
+
+CREATE TABLE fitnessGoals (
+    id SERIAL PRIMARY KEY, 
+    fitGoal VARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE appointments (
+    id SERIAL PRIMARY KEY, 
+    user_id INT REFERENCES users(id),
+    trainer_id INT REFERENCES trainers(id),
+    service_id INT REFERENCES services(id),
+    dateOf DATE NOT NULL,
+    timeOf INT NOT NULL,
+    curStatus VARCHAR(50) DEFAULT 'upcoming'
+);
+
+
+CREATE TABLE complaintPage (
+    id SERIAL PRIMARY KEY, 
+    customerName VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    complaint VARCHAR(300)
+);
+
+
+INSERT INTO trainers (trainerName, photo) VALUES 
+('Michael Strand', 'https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=600&q=80'),
+('John Cheng', 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=600&q=80'),
+('Emma Williams', 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?w=600&q=80'),
+('David Martinez', 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80');
+
+
+INSERT INTO trainerAvailability (trainer_id, mon, tue, wed, thu, fri, sat, sun) VALUES 
+(1,true,false,true,true,true,false,true),
+(2,false,true,false,true,true,true,true),
+(3,false,false,true,true,true,true,false),
+(4,true,true,true,false,true,false,false);
+
 
 INSERT INTO services (serviceName, duration) VALUES 
 ('Peronsal Training', 60),
@@ -18,70 +80,5 @@ INSERT INTO services (serviceName, duration) VALUES
 ('Pilates', 80),
 ('Nutrition', 40);
 
-
-
-CREATE TABLE users(
-    id SERIAL PRIMARY KEY, 
-    userName VARCHAR(100) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(100) NOT NULL,
-    fitGoals_id INT REFERENCES fitnessGoals(id)
-);
-
--- 3. Create fitnessGoals (no dependencies)
-CREATE TABLE fitnessGoals (
-    id SERIAL PRIMARY KEY, 
-    fitGoal1 VARCHAR(100),
-    fitGoal2 VARCHAR(100),
-    fitGoal3 VARCHAR(100),
-    fitGoal4 VARCHAR(100),
-    fitGoal5 VARCHAR(100),
-    fitGoal6 VARCHAR(100)
-);
-
--- 4. Create appointments (depends on trainers + services)
---    Also fixed typo: "apointments" → "appointments"
-CREATE TABLE appointments (
-    id SERIAL PRIMARY KEY, 
-    trainer_id INT REFERENCES trainers(id),
-    service_id INT REFERENCES services(id),
-    dateOf VARCHAR(100) NOT NULL,
-    timeOf INT NOT NULL,
-    curStatus VARCHAR(100) DEFAULT 'upcoming'
-);
-
--- 5. Create trainerAvailability (depends on trainers)
-CREATE TABLE trainerAvailability(
-    id SERIAL PRIMARY KEY, 
-    trainer_id INT REFERENCES trainers(id),
-    unavailableDay INT -- 1 for Sunday, ..., 5 for Friday
-);
-
--- 6. Create users (depends on fitnessGoals)
-CREATE TABLE users(
-    id SERIAL PRIMARY KEY, 
-    userName VARCHAR(100) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(100) NOT NULL,
-    fitGoals_id INT REFERENCES fitnessGoals(id)
-);
-
--- 7. Create complaintPage (no dependencies)
-CREATE TABLE complaintPage (
-    id SERIAL PRIMARY KEY, 
-    customerName VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    subject VARCHAR(100) NOT NULL,
-    message VARCHAR(300)
-);
-
--- 8. Seed data (insert after tables exist)
-INSERT INTO trainers (trainerName, email) VALUES 
-('Alex Rivera', 'alex@fitness.com'),
-('Jordan Smith', 'jordan@fitness.com'),
-('Sam Taylor', 'sam@fitness.com');
-
-INSERT INTO services (serviceName, duration) VALUES 
-('HIIT Session', 45),
-('Strength Training', 60),
-('Yoga Flow', 50);
+INSERT INTO fitnessGoals (fitGoal) VALUES 
+('Lose weight');
