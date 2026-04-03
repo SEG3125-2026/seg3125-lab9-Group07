@@ -1,5 +1,5 @@
 const express = require('express');
-const { Pool } = require('pg'); // we're using postgresql
+const { Pool } = require('pg');
 const cors = require('cors');
 
 const app = express();
@@ -215,4 +215,5 @@ app.get('/api/trainerAvailability/:trainerId', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Database: ${process.env.DB_NAME || 'fitbook'}`);
+    console.log(`Server is humming along at http://localhost:${PORT}`); 
 });

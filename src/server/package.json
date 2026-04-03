@@ -15,5 +15,6 @@
         "pg": "^8.20.0"
     },
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "keywords": []
 }

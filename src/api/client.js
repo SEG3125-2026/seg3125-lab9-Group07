@@ -27,15 +27,15 @@ export const getUserProfile = () => client.get(`/api/users`); ///(userId) ${user
 export const updateUserProfile = (userData) => client.put(`/api/users`, userData); ///(userId, userData)  ${userId}
 
 // FITNESS GOALS
-export const getFitnessGoals = () => client.get(`/api/fitnessGoals`); //(userId) => client.get(`/api/fitnessGoals/${userId}`);
-export const updateFitnessGoals = (goalsId, goalsData) => client.put(`/api/fitnessGoals/${goalsId}`, goalsData);
+export const getFitnessGoals = () => client.get(`/api/fitnessgoals`); //(userId) => client.get(`/api/fitnessGoals/${userId}`);
+export const updateFitnessGoals = (goalsId, goalsData) => client.put(`/api/fitnessgoals/${goalsId}`, goalsData);
 
 // CONTACT/COMPLAINTS
-export const submitContactForm = (contactData) => client.post('/api/complaintPage', contactData);
-export const getContacts = () => client.get('/api/complaintPage');
+export const submitContactForm = (contactData) => client.post('/api/complaintpage', contactData);
+export const getContacts = () => client.get('/api/complaintpage');
 
 // TRAINER AVAILABILITY
-export const getTrainerAvailability = (trainerId) => client.get(`/api/trainerAvailability/${trainerId}`);
+export const getTrainerAvailability = (trainerId) => client.get(`/api/traineravailability/${trainerId}`);
 
 // HEALTH CHECK
 //export const healthCheck = () => client.get('/api/health');

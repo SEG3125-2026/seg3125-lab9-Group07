@@ -5,20 +5,19 @@ import { getServices, getTrainers, createAppointment } from '../api/client';
 import './BookPage.css';
 
 const SERVICE_IMAGES = {
-  'HIIT Session': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80',
-  'Strength Training': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&q=80',
-  'Yoga Flow': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80',
   'Personal Training': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80',
   'Yoga': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&q=80',
   'Pilates': 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&q=80',
   'Nutrition': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80',
 };
 
+/*
 const TRAINER_IMAGES = {
   'Alex Rivera': 'https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=600&q=80',
   'Jordan Smith': 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=600&q=80',
   'Sam Taylor': 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?w=600&q=80',
 };
+*/
 
 const TIME_SLOTS = ['9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM'];
 const STEPS = ['Select Service', 'Select Trainer', 'Select Date & Time', 'Review & Book'];
@@ -85,10 +84,9 @@ function StepTrainer({ trainers, selected, onSelect, loading }) {
           type="button"
           onClick={() => onSelect(t)}
         >
-          <img src={TRAINER_IMAGES[t.trainerName] || 'https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=600&q=80'} alt={t.trainerName} className="grid-img" />
+          <img src={t.photo || 'https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=600&q=80'} alt={t.trainerName} className="grid-img" />
           <div className="grid-overlay">
             <span className="grid-name">{t.trainerName}</span>
-            <span className="grid-sub">{t.email}</span>
           </div>
         </button>
       ))}
