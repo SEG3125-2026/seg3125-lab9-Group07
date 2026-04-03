@@ -14,18 +14,59 @@ const pool = new Pool({
     port: 5432,
 });
 
-// Fetch all info
-app.get('/api/appointments', async (req, res) => {
+const PORT = 5000;
+
+// USERS
+// Get user profile
+app.get('/users', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM appointments');
-        res.json(result.rows);
+        //const { userId } = req.params;
+        //const { userName, email, phone, fitGoals_ids } = req.body;
+        const result = await pool.query(`SELECT * FROM users LIMIT 1`);
+        //[userName, email, phone, fitGoals_ids]);
+        res.json(result.rows[0]);
     } catch (err) {
-        res.status(500).json(err.message);
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch user profile' });
+    }
+});
+
+// Create new user
+/*app.post('/users', async (req, res) => {
+    try {
+        //const { userId } = req.params;
+        const { userName, email, phone, fitGoals_ids, id} = req.body;
+        const result = await pool.query(
+            `UPDATE users SET "userName" = $1, email = $2, phone = $3, fitGoals_ids = $4 WHERE id = $5 RETURNING *`,
+            [userName, email, phone, fitGoals_ids, id]
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to create user' });
+    }
+});*/
+
+// Update user profile
+app.put('/users', async (req, res) => {
+    try {
+        // const { userId } = req.params;
+        const { userName, email, phone, fitGoals_ids, id} = req.body;
+        const result = await pool.query(
+            `UPDATE users SET userName = $1, email = $2, phone = $3, fitGoals_id = $4 WHERE id = $5 RETURNING *`,
+            [userName, email, phone, fitGoals_ids, id]
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update user' });
     }
 });
 
 
-// ===== TRAINERS =====
+// Fetch all info
+
+// TRAINERS 
 app.get('/trainers', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM trainers');
@@ -37,7 +78,7 @@ app.get('/trainers', async (req, res) => {
     }
 });
 
-// ===== SERVICES =====
+// SERVUCES
 app.get('/services', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM services');
@@ -66,7 +107,7 @@ app.post('/appointments', async (req, res) => {
     try {
         const { user_id, trainer_id, service_id, dateOf, timeOf } = req.body;
         const result = await pool.query(
-            `INSERT INTO apointments (trainer_id, service_id, dateOf, timeOf, user_id, curStatus)
+            `INSERT INTO appointments (trainer_id, service_id, dateOf, timeOf, user_id, curStatus)
              VALUES ($1, $2, $3, $4, $5, 'upcoming')
              RETURNING *`,
             [trainer_id, service_id, dateOf, timeOf, user_id]
@@ -83,7 +124,7 @@ app.put('/appointments/:appointmentId', async (req, res) => {
     try {
         const { appointmentId } = req.params;
         const result = await pool.query(
-            `UPDATE apointments SET curStatus = $1 WHERE id = $2 RETURNING *`,
+            `UPDATE appointments SET curStatus = $1 WHERE id = $2 RETURNING *`,
             ['canceled', appointmentId]
         );
         res.json(result.rows[0]);
@@ -93,69 +134,13 @@ app.put('/appointments/:appointmentId', async (req, res) => {
     }
 });
 
-// ===== USERS & PROFILES =====
-// Get user profile
-app.get('/users/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const result = await pool.query(
-            `SELECT u.*, fg.* FROM users u
-             LEFT JOIN fitnessGoals fg ON u.fitGoals_id = fg.id
-             WHERE u.id = $1`,
-            [userId]
-        );
-        res.json(result.rows[0] || {});
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch user profile' });
-    }
-});
-
-// Create new user
-app.post('/users', async (req, res) => {
-    try {
-        const { userName, email, phone, fitGoals_ids } = req.body;
-        const result = await pool.query(
-            `INSERT INTO users (userName, email, phone,fitGoals_ids)
-             VALUES ($1, $2, $3, $4)
-             RETURNING *`,
-            [userName, email, phone, fitGoals_ids]
-        );
-        res.status(201).json(result.rows[0]);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to create user' });
-    }
-});
-
-// Update user profile
-app.put('/api/users/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const { userName, email, phone } = req.body;
-        const result = await pool.query(
-            `UPDATE users SET userName = $1, email = $2, phone = $3 WHERE id = $4 RETURNING *`,
-            [userName, email, phone, userId]
-        );
-        res.json(result.rows[0]);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update user' });
-    }
-});
 
 // ===== FITNESS GOALS =====
 // Get user's fitness goals
-app.get('/api/fitness-goals/:userId', async (req, res) => {
+app.get('/fitnessGoals', async (req, res) => { ///:userId
     try {
-        const { userId } = req.params;
-        const result = await pool.query(
-            `SELECT fg.* FROM fitnessGoals fg
-             JOIN users u ON u.fitGoals_id = fg.id
-             WHERE u.id = $1`,
-            [userId]
-        );
-        res.json(result.rows[0] || {});
+        const result = await pool.query(`SELECT * FROM fitnessGoals`);
+        res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch fitness goals' });
@@ -163,16 +148,13 @@ app.get('/api/fitness-goals/:userId', async (req, res) => {
 });
 
 // Update fitness goals
-app.put('/api/fitness-goals/:goalsId', async (req, res) => {
+app.put('/fitness-goals/:goalsId', async (req, res) => {
     try {
         const { goalsId } = req.params;
-        const { fitGoal1, fitGoal2, fitGoal3, fitGoal4, fitGoal5, fitGoal6 } = req.body;
+        const { fitGoal } = req.body;
         const result = await pool.query(
-            `UPDATE fitnessGoals 
-             SET fitGoal1 = $1, fitGoal2 = $2, fitGoal3 = $3, fitGoal4 = $4, fitGoal5 = $5, fitGoal6 = $6
-             WHERE id = $7
-             RETURNING *`,
-            [fitGoal1, fitGoal2, fitGoal3, fitGoal4, fitGoal5, fitGoal6, goalsId]
+            `UPDATE fitnessGoals SET fitGoal= $1 WHERE id = $2 RETURNING *`,
+            [fitGoal, goalsId]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -181,16 +163,18 @@ app.put('/api/fitness-goals/:goalsId', async (req, res) => {
     }
 });
 
-// ===== CONTACT & COMPLAINTS =====
+
+
+// CONTACT
 // Submit contact/complaint
-app.post('/api/contact', async (req, res) => {
+app.post('/complaintPage', async (req, res) => {
     try {
-        const { customerName, email, subject, message } = req.body;
+        const { customerName, email, title, complaint} = req.body;
         const result = await pool.query(
-            `INSERT INTO complaintPage (customerName, email, subject, message)
+            `INSERT INTO complaintPage (customerName, email, title, complaint)
              VALUES ($1, $2, $3, $4)
              RETURNING *`,
-            [customerName, email, subject, message]
+            [customerName, email, title, complaint]
         );
         res.status(201).json({ success: true, message: 'Message received', data: result.rows[0] });
     } catch (err) {
@@ -200,7 +184,7 @@ app.post('/api/contact', async (req, res) => {
 });
 
 // Get all contacts (for admin)
-app.get('/api/contact', async (req, res) => {
+app.get('/contact', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM complaintPage ORDER BY id DESC');
         res.json(result.rows);
@@ -210,8 +194,8 @@ app.get('/api/contact', async (req, res) => {
     }
 });
 
-// ===== TRAINER AVAILABILITY =====
-app.get('/api/trainer-availability/:trainerId', async (req, res) => {
+// TRAINER AVAILABILITY
+app.get('/trainerAvailability/:trainerId', async (req, res) => {
     try {
         const { trainerId } = req.params;
         const result = await pool.query(
@@ -225,27 +209,9 @@ app.get('/api/trainer-availability/:trainerId', async (req, res) => {
     }
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'Server is running' });
-});
-
-// ===== SEED DATA =====
-app.get('/api/seed', async (req, res) => {
-    try {
-        const fs = require('fs');
-        const path = require('path');
-        const sql = fs.readFileSync(path.join(__dirname, 'database.sql'), 'utf8');
-        await pool.query(sql);
-        res.json({ message: 'Seed data executed successfully' });
-    } catch (err) {
-        console.error('Seed error:', err);
-        res.status(500).json({ error: 'Failed to seed database' });
-    }
-});
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
-    console.log(`🗄️  Database: ${process.env.DB_NAME || 'fitbook'}`);
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Database: ${process.env.DB_NAME || 'fitbook'}`);
 });
