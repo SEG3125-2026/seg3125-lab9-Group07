@@ -62,9 +62,9 @@ function StepService({ services, selected, onSelect, loading }) {
           type="button"
           onClick={() => onSelect(s)}
         >
-          <img src={SERVICE_IMAGES[s.serviceName] || SERVICE_IMAGES['Personal Training']} alt={s.serviceName} className="grid-img" />
+          <img src={SERVICE_IMAGES[s.servicename] || SERVICE_IMAGES['Personal Training']} alt={s.serviceName} className="grid-img" />
           <div className="grid-overlay">
-            <span className="grid-name">{s.serviceName}</span>
+            <span className="grid-name">{s.servicename}</span>
             <span className="grid-sub">{s.duration} minutes</span>
           </div>
         </button>
@@ -86,7 +86,7 @@ function StepTrainer({ trainers, selected, onSelect, loading }) {
         >
           <img src={t.photo || 'https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=600&q=80'} alt={t.trainerName} className="grid-img" />
           <div className="grid-overlay">
-            <span className="grid-name">{t.trainerName}</span>
+            <span className="grid-name">{t.trainername}</span>
           </div>
         </button>
       ))}
@@ -123,11 +123,11 @@ function StepReview({ service, trainer, date, time, onBook, booked }) {
     <div className="review-layout">
       <div className="review-row">
         <span className="review-label">Service</span>
-        <div className="review-value">{service?.serviceName}</div>
+        <div className="review-value">{service?.servicename}</div>
       </div>
       <div className="review-row">
         <span className="review-label">Trainer</span>
-        <div className="review-value">{trainer?.trainerName}</div>
+        <div className="review-value">{trainer?.trainername}</div>
       </div>
       <div className="review-row">
         <span className="review-label">Date & Time</span>

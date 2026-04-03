@@ -51,10 +51,10 @@ app.get('/api/users', async (req, res) => {
 app.put('/api/users', async (req, res) => {
     try {
         // const { userId } = req.params;
-        const { userName, email, phone, fitGoals_ids, id} = req.body;
+        const { username, email, phone, fitgoals_ids, id} = req.body;
         const result = await pool.query(
             `UPDATE users SET userName = $1, email = $2, phone = $3, fitGoals_id = $4 WHERE id = $5 RETURNING *`,
-            [userName, email, phone, fitGoals_ids, id]
+            [username, email, phone, fitgoals_ids, id]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -105,17 +105,17 @@ app.get('/api/appointments', async (req, res) => { ///:userId
 
 // Create new appointment
 app.post('/api/appointments', async (req, res) => {
-    try {
-        const { user_id, trainer_id, service_id, dateOf, timeOf } = req.body;
+    try { // user_id,
+        const {trainer_id, service_id, dateOf, timeOf} = req.body;
         const result = await pool.query(
-            `INSERT INTO appointments (trainer_id, service_id, dateOf, timeOf, user_id, curStatus)
-             VALUES ($1, $2, $3, $4, $5, 'upcoming')
+            `INSERT INTO appointments (trainer_id, service_id, dateOf, timeof, curstatus)
+             VALUES ($1, $2, $3, $4, $5)
              RETURNING *`,
-            [trainer_id, service_id, dateOf, timeOf, user_id]
+            [trainer_id, service_id, dateOf, timeOf, 'upcoming'] //, user_id
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error(err);
+        console.error("Booking error!", err);
         res.status(500).json({ error: 'Failed to create appointment' });
     }
 });
@@ -152,10 +152,10 @@ app.get('/api/fitnessGoals', async (req, res) => { ///:userId
 app.put('/api/fitnessGoals/:goalsId', async (req, res) => {
     try {
         const { goalsId } = req.params;
-        const { fitGoal } = req.body;
+        const { fitgoal } = req.body;
         const result = await pool.query(
             `UPDATE fitnessGoals SET fitGoal= $1 WHERE id = $2 RETURNING *`,
-            [fitGoal, goalsId]
+            [fitgoal, goalsId]
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -170,12 +170,12 @@ app.put('/api/fitnessGoals/:goalsId', async (req, res) => {
 // Submit contact/complaint
 app.post('/api/complaintPage', async (req, res) => {
     try {
-        const { customerName, email, title, complaint} = req.body;
+        const { customername, email, title, complaint} = req.body;
         const result = await pool.query(
             `INSERT INTO complaintPage (customerName, email, title, complaint)
              VALUES ($1, $2, $3, $4)
              RETURNING *`,
-            [customerName, email, title, complaint]
+            [customername, email, title, complaint]
         );
         res.status(201).json({ success: true, message: 'Message received', data: result.rows[0] });
     } catch (err) {
