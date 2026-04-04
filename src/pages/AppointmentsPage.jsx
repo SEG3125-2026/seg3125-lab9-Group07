@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import { getUserAppointments, cancelAppointment } from '../api/client';
-import './AppointmentsPage.css';
-
 import { useNavigate } from 'react-router-dom';
+
+import { getUserAppointments, cancelAppointment } from '../api/client'; 
+import './AppointmentsPage.css';
 
 export default function AppointmentsPage() {
   const navigate = useNavigate();
@@ -59,7 +59,23 @@ export default function AppointmentsPage() {
 });
 
 
-  const handleCancel = (id) => setCancelConfirm(id);
+  //const handleCancel = (id) => setCancelConfirm(id);
+
+  const handleCancel = async (appointmentId) => {
+  try {
+    // This calls the function in your client.js which already handles axios
+    await cancelAppointment(appointmentId);
+    
+    // Refresh the list to show the status change
+    fetchAppointments(); 
+    
+    // If you prefer a full page refresh:
+    // window.location.reload(); 
+  } catch (err) {
+    console.error("Cancel UI Error:", err);
+    setError("Failed to cancel the appointment. Please try again.");
+  }
+};
 
   const confirmCancel = async () => {
     try {

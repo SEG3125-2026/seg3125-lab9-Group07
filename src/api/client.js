@@ -19,7 +19,15 @@ export const getServices = () => client.get('/api/services');
 // APPOINTMENTS
 export const getUserAppointments = (userId) => client.get(`/api/appointments`); ///${userId}
 export const createAppointment = (appointmentData) => client.post('/api/appointments', appointmentData);
-export const cancelAppointment = (appointmentId) => client.put(`/api/appointments/${appointmentId}`);
+export const cancelAppointment = async (id) => {
+  return await axios.put(`http://localhost:5000/api/appointments/cancel/${id}`);
+};
+export const rescheduleAppointment = async (id, dateData) => {
+  // Ensure there is no extra "reschedule" word here if your server doesn't have it
+  return await axios.put(`http://localhost:5000/api/appointments/${id}`, dateData);
+};
+
+
 
 // USERS
 export const getUserProfile = () => client.get(`/api/users`); ///(userId) ${userId}
@@ -35,6 +43,16 @@ export const updateFitnessGoals = (goalsId, goalsData) => client.put(`/api/fitne
 // CONTACT/COMPLAINTS
 export const submitContactForm = (contactData) => client.post('/api/complaintpage', contactData);
 export const getContacts = () => client.get('/api/complaintpage');
+
+/*export const rescheduleAppointment = (id, newDate, newTime) => {
+    return axios.put(`http://localhost:5000/api/appointments/${id}`, {
+        newDate,
+        newTime
+    });
+};
+ */
+
+
 
 // TRAINER AVAILABILITY
 export const getTrainerAvailability = (trainerId) => client.get(`/api/traineravailability/${trainerId}`);

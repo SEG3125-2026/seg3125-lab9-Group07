@@ -77,11 +77,31 @@ export default function ProfilePage() {
     return () => { isMounted = false; };
   }, []);
 
+
+  const handleReschedule = async (appointmentId, selectedDate, selectedTime) => {
+  try {
+    // 1. Double check the values aren't undefined
+    console.log("Rescheduling ID:", appointmentId);
+
+    // 2. Call the API
+    await rescheduleAppointment(appointmentId, selectedDate, selectedTime);
+    
+    // 3. Refresh data
+    alert("Rescheduled successfully!");
+    window.location.reload(); 
+  } catch (err) {
+    console.error("Reschedule UI Error:", err);
+    // This is where you see the "Unexpected token <"
+    setError("Failed to reschedule. Check server logs.");
+  }
+};
+
+
   const handleSaveProfile = async () => {
     if (!name.trim()) {
     setError("Name cannot be empty!");
     return;}
-    
+
     try {
       const userId = localStorage.getItem('userId') || 1;
       const profileData = {

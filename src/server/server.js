@@ -114,18 +114,20 @@ app.get('/api/appointments', async (req, res) => { ///:userId
 
 // Create new appointment
 app.post('/api/appointments', async (req, res) => {
-    try { // user_id,
-        const {trainer_id, service_id, dateOf, timeOf} = req.body;
+    try {
+        const { trainer_id, service_id, dateOf, timeOf } = req.body;
+
         const result = await pool.query(
-            `INSERT INTO appointments (trainer_id, service_id, dateOf, timeof, curstatus)
+            `INSERT INTO appointments (trainer_id, service_id, dateof, timeof, curstatus)
              VALUES ($1, $2, $3, $4, $5)
              RETURNING *`,
-            [trainer_id, service_id, dateOf, timeOf, 'upcoming'] //, user_id
+            [trainer_id, service_id, dateOf, timeOf, 'upcoming']
         );
+
         res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error("Booking error!", err);
-        res.status(500).json({ error: 'Failed to create appointment' });
+        console.error("Booking error:", err.message);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -143,28 +145,60 @@ app.put('/api/appointments/cancel/:id', async (req, res) => {
         );
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err);
+        console.error("Cancel Error:", err.message);
         res.status(500).json({ error: 'Failed to cancel' });
     }
 });
 
 // 2. RESCHEDULE ROUTE 
-app.put('/api/appointments/reschedule/:id', async (req, res) => {
+
+// Change the path to match what React is calling (/api/appointments/:id)
+app.put('/api/appointments/:id', async (req, res) => {
+    const { id } = req.params;
+    // We accept both 'newDate/newTime' OR 'dateOf/timeOf' to be safe
+    const { newDate, newTime, dateOf, timeOf } = req.body;
+    
+    const finalDate = newDate || dateOf;
+    const finalTime = newTime || timeOf;
+
     try {
-        const { id } = req.params;
-        const { trainer_id, service_id, dateOf, timeOf } = req.body;
         const result = await pool.query(
             `UPDATE appointments 
-             SET trainer_id = $1, service_id = $2, dateof = $3, timeof = $4, curstatus = 'upcoming'
-             WHERE id = $5 RETURNING *`,
-            [trainer_id, service_id, dateOf, timeOf, id]
+             SET "dateof" = $1, "timeof" = $2 
+             WHERE id = $3 
+             RETURNING *`,
+            [finalDate, finalTime, id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Appointment not found" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("Reschedule Error:", err.message);
+        res.status(500).json({ error: "Database update failed" });
+    }
+});
+
+/*app.put('/api/appointments/reschedule/:id', async (req, res) => {
+    const { id } = req.params;
+    const { newDate, newTime } = req.body; 
+
+    try {
+        const result = await pool.query(
+            `UPDATE appointments 
+             SET dateof = $1, timeof = $2 
+             WHERE id = $3 
+             RETURNING *`,
+            [newDate, newTime, id]
         );
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to reschedule' });
+        console.error("Reschedule Error:", err.message);
+        res.status(500).json({ error: err.message });
     }
-});
+});*/
 
 
 
