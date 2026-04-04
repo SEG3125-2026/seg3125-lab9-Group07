@@ -94,8 +94,17 @@ app.get('/api/services', async (req, res) => {
 // Get all appointments for a user
 app.get('/api/appointments', async (req, res) => { ///:userId
     try {
-        //const {userId} = req.params;
-        const result = await pool.query('SELECT * FROM appointments');
+        const query = `
+            SELECT 
+                a.*,
+                t.trainername, 
+                s.servicename 
+            FROM appointments a
+            JOIN trainers t ON a.trainer_id = t.id
+            JOIN services s ON a.service_id = s.id
+            ORDER BY a.dateof ASC
+        `;
+        const result = await pool.query(query);
         res.json(result.rows);
     } catch (err) {
         console.error(err);
@@ -120,20 +129,67 @@ app.post('/api/appointments', async (req, res) => {
     }
 });
 
-// Cancel appointment
-app.put('/api/appointments/:appointmentId', async (req, res) => {
+
+
+
+
+// 1. CANCEL ROUTE
+app.put('/api/appointments/cancel/:id', async (req, res) => {
     try {
-        const { appointmentId } = req.params;
+        const { id } = req.params;
         const result = await pool.query(
-            `UPDATE appointments SET curStatus = $1 WHERE id = $2 RETURNING *`,
-            ['canceled', appointmentId]
+            `UPDATE appointments SET curstatus = 'canceled' WHERE id = $1 RETURNING *`,
+            [id]
         );
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to cancel' });
+    }
+});
+
+// 2. RESCHEDULE ROUTE 
+app.put('/api/appointments/reschedule/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { trainer_id, service_id, dateOf, timeOf } = req.body;
+        const result = await pool.query(
+            `UPDATE appointments 
+             SET trainer_id = $1, service_id = $2, dateof = $3, timeof = $4, curstatus = 'upcoming'
+             WHERE id = $5 RETURNING *`,
+            [trainer_id, service_id, dateOf, timeOf, id]
+        );
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to reschedule' });
+    }
+});
+
+
+
+
+// Cancel appointment
+/*app.put('/api/appointments/:id', async (req, res) => {
+    try {
+        const { id } = req.params; //appointmentId
+        const { dateOf, timeOf, trainer_id, service_id } = req.body;
+        const result = await pool.query(
+            `UPDATE appointments SET dateof = $1, timeof = $2, trainer_id = $3, service_id = $4, curstatus = 'upcoming'
+             WHERE id = $5 RETURNING *`,
+           [dateOf, timeOf, trainer_id, service_id, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Appointment not found" });
+        }
+
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update appointment' });
     }
-});
+});*/
 
 
 // ===== FITNESS GOALS =====

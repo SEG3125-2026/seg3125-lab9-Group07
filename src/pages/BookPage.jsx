@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar';
 import { getServices, getTrainers, createAppointment } from '../api/client';
 import './BookPage.css';
 
+import { useLocation } from 'react-router-dom';
+
 const SERVICE_IMAGES = {
   'Personal Training': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80',
   'Yoga': 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&q=80',
@@ -143,10 +145,14 @@ function StepReview({ service, trainer, date, time, onBook, booked }) {
 }
 
 export default function BookPage() {
+
+  const location = useLocation();
+  const data = location.state || {};
+
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
-  const [service, setService] = useState(null);
-  const [trainer, setTrainer] = useState(null);
+  const [step, setStep] = useState(data.initialStep || 0); //useState(0);
+  const [service, setService] = useState(data.existingService || null); //useState(null);
+  const [trainer, setTrainer] = useState(data.existingTrainer || null); // useState(null);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [services, setServices] = useState([]);
@@ -154,6 +160,8 @@ export default function BookPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [booked, setBooked] = useState(false);
+  
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -191,25 +199,45 @@ export default function BookPage() {
   // Inside BookPage.jsx -> handleBook function
 
   const handleBook = async () => {
+    
+    const resData = location.state || {};
+    const isReschedule = resData.rescheduleMode;
+    const appointmentId = resData.appointmentId; 
+    
     const bookingData = {
       trainer_id: trainer.id,
       service_id: service.id,
       dateOf: date,
       timeOf: time, // e.g., "10 AM"
+      
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/appointments', {
+      
+    const url = isReschedule // choose between updating or creating appointments
+    ? `http://localhost:5000/api/appointments/${appointmentId}` 
+    : 'http://localhost:5000/api/appointments';
+    
+    const method = isReschedule ? 'PUT' : 'POST';
+
+    const response = await fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bookingData),
+    });
+      /*const response = await fetch('http://localhost:5000/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookingData),
-      });
+      });*/
 
       if (response.ok) {
         setBooked(true);
         setTimeout(() => navigate('/appointments'), 1800);
       } else {
-        alert("Booking failed. Please try again.");
+        //alert("Booking failed. Please try again.");
+        const errorData = await response.json();
+        alert(`Action failed: ${errorData.error || 'Check server logs'}`);
       }
     } catch (error) {
       console.error("Error:", error);
