@@ -55,7 +55,7 @@ CREATE TABLE complaintPage (
     customerName VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     title VARCHAR(100) NOT NULL,
-    complaint VARCHAR(300)
+    complaint TEXT
 );
 
 

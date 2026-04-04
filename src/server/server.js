@@ -51,10 +51,10 @@ app.get('/api/users', async (req, res) => {
 app.put('/api/users', async (req, res) => {
     try {
         // const { userId } = req.params;
-        const { username, email, phone, fitgoals_ids, id} = req.body;
+        const {username, email, phone,  id} = req.body; //fitgoals_ids,
         const result = await pool.query(
-            `UPDATE users SET userName = $1, email = $2, phone = $3, fitGoals_id = $4 WHERE id = $5 RETURNING *`,
-            [username, email, phone, fitgoals_ids, id]
+            `UPDATE users SET userName = $1, email = $2, phone = $3 WHERE id = $4 RETURNING *`, //fitGoals_id = $4
+            [username, email, phone, id] // fitgoals_ids,
         );
         res.json(result.rows[0]);
     } catch (err) {
@@ -227,12 +227,20 @@ app.put('/api/fitnessGoals/:goalsId', async (req, res) => {
 app.post('/api/complaintPage', async (req, res) => {
     try {
         const { customername, email, title, complaint} = req.body;
+       
+        if (!customername || !email || !complaint) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+
         const result = await pool.query(
             `INSERT INTO complaintPage (customerName, email, title, complaint)
              VALUES ($1, $2, $3, $4)
              RETURNING *`,
             [customername, email, title, complaint]
         );
+
+
         res.status(201).json({ success: true, message: 'Message received', data: result.rows[0] });
     } catch (err) {
         console.error(err);

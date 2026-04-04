@@ -24,7 +24,9 @@ export const cancelAppointment = (appointmentId) => client.put(`/api/appointment
 // USERS
 export const getUserProfile = () => client.get(`/api/users`); ///(userId) ${userId}
 //export const createUser = (userData) => client.post('/api/users', userData);
-export const updateUserProfile = (userData) => client.put(`/api/users`, userData); ///(userId, userData)  ${userId}
+export const updateUserProfile = (userData) => {
+  return axios.put('http://localhost:5000/api/users', userData);
+};
 
 // FITNESS GOALS
 export const getFitnessGoals = () => client.get(`/api/fitnessgoals`); //(userId) => client.get(`/api/fitnessGoals/${userId}`);

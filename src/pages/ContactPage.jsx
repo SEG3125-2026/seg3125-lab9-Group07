@@ -43,13 +43,14 @@ const ClearIcon = () => (
 );
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ customername: '', email: '', title: '', complaint: '' });
+  const [submitted, setSubmitted] = useState(false); // Back to boolean
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  
   const handleChange = (e) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const clearField = (field) => {
@@ -58,28 +59,27 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.subject || !form.message) return;
+    if (!form.customername || !form.email || !form.complaint) return;
+    setLoading(true);
+    setError(null);
 
     try {
-      setLoading(true);
-      setError(null);
-      await submitContactForm({
-        customerName: form.name,
-        email: form.email,
-        subject: form.subject,
-        message: form.message
-      });
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setForm({ name: '', email: '', subject: '', message: '' });
-      }, 3000);
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      setError('Failed to submit message. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    const response = await fetch('http://localhost:5000/api/complaintPage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form)
+    });
+
+    if (!response.ok) throw new Error('Submission failed');
+
+    setSubmitted(true);
+    setForm({ customername: '', email: '', title: '', complaint: '' }); // Reset to empty strings
+  } catch (err) {
+    setError(err.complaint);
+  } finally {
+    setLoading(false);
+  }
+
   };
 
   return (
@@ -134,15 +134,15 @@ export default function ContactPage() {
                 <div className="form-field">
                   <input
                     type="text"
-                    name="name"
-                    value={form.name}
+                    name="customername"
+                    value={form.customername || ""}
                     onChange={handleChange}
                     placeholder="Please enter your name"
                     className="form-input"
                   />
                   <label className="form-label">Name</label>
-                  {form.name && (
-                    <button type="button" className="clear-btn" onClick={() => clearField('name')}>
+                  {form.customername && (
+                    <button type="button" className="clear-btn" onClick={() => clearField('customername')}>
                       <ClearIcon />
                     </button>
                   )}
@@ -168,15 +168,15 @@ export default function ContactPage() {
               <div className="form-field">
                 <input
                   type="text"
-                  name="subject"
-                  value={form.subject}
+                  name="title"
+                  value={form.title}
                   onChange={handleChange}
                   placeholder="Please enter subject of your message"
                   className="form-input"
                 />
                 <label className="form-label">Subject</label>
-                {form.subject && (
-                  <button type="button" className="clear-btn" onClick={() => clearField('subject')}>
+                {form.title && (
+                  <button type="button" className="clear-btn" onClick={() => clearField('title')}>
                     <ClearIcon />
                   </button>
                 )}
@@ -184,16 +184,16 @@ export default function ContactPage() {
 
               <div className="form-field form-field--textarea">
                 <textarea
-                  name="message"
-                  value={form.message}
+                  name="complaint"
+                  value={form.complaint}
                   onChange={handleChange}
                   placeholder="Enter your message here..."
                   className="form-input form-textarea"
                   rows={7}
                 />
                 <label className="form-label">Message</label>
-                {form.message && (
-                  <button type="button" className="clear-btn clear-btn--textarea" onClick={() => clearField('message')}>
+                {form.complaint && (
+                  <button type="button" className="clear-btn clear-btn--textarea" onClick={() => clearField('complaint')}>
                     <ClearIcon />
                   </button>
                 )}
